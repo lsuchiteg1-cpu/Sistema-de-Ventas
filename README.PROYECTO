@@ -1,0 +1,326 @@
+# Sistema de Ventas con Python y PostgreSQL
+
+## Descripción
+
+Sistema de Ventas desarrollado en Python utilizando la librería Tkinter para la interfaz gráfica y PostgreSQL como sistema gestor de base de datos.
+
+La aplicación permite administrar productos, realizar ventas, generar facturas en formato TXT y visualizar reportes de ventas realizadas.
+
+---
+
+## 🎯 Objetivos del Proyecto
+
+- Gestionar productos en inventario.
+- Realizar ventas mediante un carrito de compras.
+- Generar facturas automáticamente.
+- Registrar ventas en PostgreSQL.
+- Consultar reportes de ventas.
+- Aplicar estructuras de datos (Lista Enlazada y Pila).
+- Aplicar principios de programación orientada a objetos.
+
+---
+
+## 🛠 Tecnologías Utilizadas
+
+| Tecnología | Descripción |
+|------------|-------------|
+| Python 3 | Lenguaje principal |
+| Tkinter | Interfaz gráfica |
+| PostgreSQL | Base de datos |
+| psycopg2 | Conector Python-PostgreSQL |
+| pgAdmin 4 | Administración de la base de datos |
+| Visual Studio Code | Entorno de desarrollo |
+| Draw.io | Diagramas UML |
+
+---
+
+## Estructura del Proyecto
+
+```text
+SistemaVentas/
+│
+├── SistemaVentas.py
+├── README.md
+├── facturas/
+│   ├── factura_1.txt
+│   ├── factura_2.txt
+│
+└── script_bd.sql
+```
+
+---
+
+## Arquitectura del Sistema
+
+El sistema está compuesto por las siguientes clases:
+
+### Producto
+Representa un producto del inventario.
+
+Atributos:
+
+- id
+- nombre
+- precio
+
+---
+
+### Nodo
+
+Permite construir:
+
+- Lista enlazada (Carrito)
+- Pila (Historial de acciones)
+
+---
+
+### ListaEnlazada
+
+Implementa el carrito de compras.
+
+Funciones:
+
+- insertar()
+- eliminar_cabeza()
+- vaciar()
+- obtener_productos()
+
+---
+
+### PilaHistorial
+
+Permite deshacer la última acción realizada.
+
+Funciones:
+
+- push()
+- pop()
+- vaciar()
+
+---
+
+### DatabaseManager
+
+Administra todas las operaciones con PostgreSQL.
+
+Funciones:
+
+- inicializar_tablas()
+- ejecutar_dml()
+- obtener_productos()
+- obtener_historial_ventas()
+
+---
+
+### SistemaVentasApp
+
+Controlador principal de la aplicación.
+
+Gestiona:
+
+- Base de datos
+- Carrito
+- Historial
+- Navegación entre pantallas
+
+---
+
+### PantallaVentas
+
+Permite:
+
+- Agregar productos al carrito
+- Deshacer productos
+- Cobrar ventas
+- Generar facturas TXT
+
+---
+
+### PantallaInventario
+
+Permite:
+
+- Registrar productos
+- Modificar productos
+- Consultar inventario
+
+---
+
+### PantallaReportes
+
+Permite:
+
+- Visualizar historial de ventas
+- Consultar total acumulado
+
+---
+
+## Base de Datos
+
+Nombre:
+
+```sql
+ventas_db
+```
+
+### Tabla Productos
+
+```sql
+CREATE TABLE productos(
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    precio DECIMAL(10,2) NOT NULL
+);
+```
+
+### Tabla Ventas
+
+```sql
+CREATE TABLE ventas(
+    id SERIAL PRIMARY KEY,
+    total NUMERIC(10,2)
+);
+```
+
+### Tabla Facturas
+
+```sql
+CREATE TABLE facturas(
+    id SERIAL PRIMARY KEY,
+    cliente VARCHAR(100),
+    nit VARCHAR(30),
+    total NUMERIC(10,2),
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+---
+
+## Datos de Prueba
+
+```sql
+INSERT INTO productos(nombre, precio)
+VALUES
+('Mouse Gamer',150.00),
+('Teclado Mecánico',350.00),
+('Monitor 24 Pulgadas',1200.00),
+('Audífonos Gamer',275.00),
+('Laptop Lenovo',4500.00);
+```
+
+---
+
+## Generación de Facturas
+
+Al realizar una venta:
+
+1. Se solicita el nombre del cliente.
+2. Se solicita el NIT.
+3. Se registra la factura en PostgreSQL.
+4. Se genera un archivo TXT.
+
+Ejemplo:
+
+```text
+factura_1.txt
+```
+
+Contenido:
+
+```text
+=====================================
+FACTURA DE VENTA
+=====================================
+
+FACTURA No: 1
+
+CLIENTE: Juan Pérez
+NIT: CF
+
+PRODUCTOS
+-------------------------------------
+Mouse Gamer - Q.150.00
+Teclado Mecánico - Q.350.00
+-------------------------------------
+
+TOTAL: Q.500.00
+
+Gracias por su compra
+```
+
+---
+
+### Configurar conexión
+
+Modificar en:
+
+```python
+self.config = {
+    "host": "localhost",
+    "database": "ventas_db",
+    "user": "postgres",
+    "password": "tu_password"
+}
+```
+
+### 7. Ejecutar aplicación
+
+```bash
+python SistemaVentas.py
+```
+
+---
+
+## Principios SOLID Aplicados
+
+### S — Single Responsibility Principle
+
+Cada clase tiene una única responsabilidad.
+
+Ejemplos:
+
+- Producto → datos del producto.
+- DatabaseManager → acceso a datos.
+- PantallaVentas → gestión de ventas.
+
+---
+
+### O — Open/Closed Principle
+
+Las clases pueden extenderse sin modificar su estructura principal.
+
+---
+
+### L — Liskov Substitution Principle
+
+Las pantallas heredan correctamente de Tkinter Frame.
+
+---
+
+### I — Interface Segregation Principle
+
+Cada clase implementa únicamente los métodos necesarios.
+
+---
+
+### D — Dependency Inversion Principle
+
+La aplicación depende de abstracciones de gestión de datos mediante DatabaseManager.
+
+---
+
+## Referencias
+
+- Python Software Foundation. Python Documentation.
+- PostgreSQL Global Development Group. PostgreSQL Documentation.
+- Tkinter Documentation.
+- psycopg2 Documentation.
+- UML Specification (OMG).
+
+---
+
+## Autor
+
+Proyecto académico desarrollado para la asignatura de Programación 1.
+
+Desarrollado en Python + PostgreSQL.
